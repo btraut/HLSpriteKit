@@ -10,6 +10,8 @@
 
 #if ! TARGET_OS_IPHONE
 
+#import <Cocoa/Cocoa.h>
+
 /**
  Out of the box, NSGestureRecognizer only allows for one target+action unlike its
  UIGestureRecognizer counterpart which allows for multiple.

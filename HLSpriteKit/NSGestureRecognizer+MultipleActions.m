@@ -15,7 +15,7 @@ static char targetActionPairsKey;
 
 /**
  When developers register targets+actions on NSGestureRecognizer, we need to save the
- entries into an NSMutableArray, and as such, much have a class that holds them.
+ entries into an NSMutableArray, and as such, must have a class that holds them.
  */
 @interface TargetActionPair : NSObject {
 @public
@@ -41,7 +41,16 @@ static char targetActionPairsKey;
 
 - (NSMutableArray *)targetActionPairs
 {
-  return objc_getAssociatedObject(self, &targetActionPairsKey);
+  NSMutableArray *targetActionPairs = objc_getAssociatedObject(self, &targetActionPairsKey);
+  
+  if (targetActionPairs != nil) {
+    return targetActionPairs;
+  }
+  
+  targetActionPairs = [NSMutableArray array];
+  objc_setAssociatedObject(self, &targetActionPairsKey, targetActionPairs, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+  
+  return targetActionPairs;
 }
 
 - (void)setTargetActionPairs:(NSMutableArray *)targetActionPairs
@@ -51,14 +60,20 @@ static char targetActionPairsKey;
 
 - (void)addTarget:(id)target action:(SEL)action
 {
+  NSMutableArray *targetActionPairs = [NSMutableArray arrayWithArray:self.targetActionPairs];
+  
   TargetActionPair *pair = [[TargetActionPair alloc] initWithTarget:target action:action];
-  [self.targetActionPairs addObject:pair];
+  [targetActionPairs addObject:pair];
+  
+  objc_setAssociatedObject(self, &targetActionPairsKey, targetActionPairs, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
 }
 
 - (void)removeTarget:(id)target action:(SEL)action
 {
-  for (NSUInteger i = 0; i < self.targetActionPairs.count; i++) {
-    TargetActionPair *targetActionPair = self.targetActionPairs[i];
+  NSMutableArray *targetActionPairs = [NSMutableArray arrayWithArray:self.targetActionPairs];
+  
+  for (NSUInteger i = 0; i < targetActionPairs.count; i++) {
+    TargetActionPair *targetActionPair = targetActionPairs[i];
     
     BOOL removeTargetActionPair = NO;
     
@@ -71,29 +86,31 @@ static char targetActionPairsKey;
     }
     
     if (removeTargetActionPair) {
-      [self.targetActionPairs removeObjectAtIndex:i];
+      [targetActionPairs removeObjectAtIndex:i];
       i--;
     }
   }
+  
+  objc_setAssociatedObject(self, &targetActionPairsKey, targetActionPairs, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
 }
 
 - (void)handleGesture:(NSGestureRecognizer *)gestureRecognizer
 {
-  for (NSGestureRecognizer *targetActionPair in self.targetActionPairs) {
+  for (TargetActionPair *targetActionPair in self.targetActionPairs) {
     // We need to determine which form of the selector the user has provided.
-    NSMethodSignature *msig = [targetActionPair.target methodSignatureForSelector:targetActionPair.action];
+    NSMethodSignature *msig = [targetActionPair->target methodSignatureForSelector:targetActionPair->action];
     
     if (msig != nil) {
       NSUInteger nargs = [msig numberOfArguments];
       
-      if (nargs == 0) {
-        IMP imp = [targetActionPair.target methodForSelector:targetActionPair.action];
+      if (nargs == 2) {
+        IMP imp = [targetActionPair->target methodForSelector:targetActionPair->action];
         void (*func)(id, SEL) = (void *)imp;
-        func(targetActionPair.target, targetActionPair.action);
-      } else if (nargs == 1) {
-        IMP imp = [targetActionPair.target methodForSelector:targetActionPair.action];
-        CGRect (*func)(id, SEL, NSGestureRecognizer *) = (void *)imp;
-        func(targetActionPair.target, targetActionPair.action, gestureRecognizer);
+        func(targetActionPair->target, targetActionPair->action);
+      } else if (nargs == 3) {
+        IMP imp = [targetActionPair->target methodForSelector:targetActionPair->action];
+        void (*func)(id, SEL, NSGestureRecognizer *) = (void *)imp;
+        func(targetActionPair->target, targetActionPair->action, gestureRecognizer);
       }
     }
   }
