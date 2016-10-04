@@ -8,6 +8,10 @@
 
 #import "HLScrollNode.h"
 
+#if ! TARGET_OS_IPHONE
+#import "NSGestureRecognizer+MultipleActions.h"
+#endif
+
 enum {
   HLScrollNodeZPositionLayerBackground = 0,
   HLScrollNodeZPositionLayerContent,
@@ -685,24 +689,27 @@ enum {
   }];
 }
 
-#if HLGESTURETARGET_AVAILABLE
-
 #pragma mark -
 #pragma mark HLGestureTarget
 
 - (NSArray *)addsToGestureRecognizers
 {
+#if TARGET_OS_IPHONE
   return @[ [[UIPanGestureRecognizer alloc] init],
             [[UIPinchGestureRecognizer alloc] init] ];
+#else
+  // Note: macOS doesn't have a pinch gesture recognizer.
+  return @[ [[NSPanGestureRecognizer alloc] init] ];
+#endif
 }
 
-- (BOOL)addToGesture:(UIGestureRecognizer *)gestureRecognizer firstTouch:(UITouch *)touch isInside:(BOOL *)isInside
+- (BOOL)addToGesture:(HLGestureRecognizer *)gestureRecognizer firstTouchSceneLocation:(CGPoint)interactionPoint isInside:(BOOL *)isInside
 {
   // note: The content might extend beyond the boundaries of the scroll node.  If a gesture
   // starts in this extended area, a gesture handler like HLScene might ask us if we'd like
   // to be the target for the gesture.  Whether we're clipping content or not, it seems like
   // the answer should be "no".
-  CGPoint locationInSelf = [touch locationInNode:self];
+  CGPoint locationInSelf = [self.scene convertPointFromView:interactionPoint];
   if (locationInSelf.x < _size.width * -_anchorPoint.x
       || locationInSelf.x > _size.width * (1.0f - _anchorPoint.x)
       || locationInSelf.y < _size.height * -_anchorPoint.y
@@ -711,22 +718,31 @@ enum {
     return NO;
   }
 
+#if TARGET_OS_IPHONE
   if (HLGestureTarget_areEquivalentGestureRecognizers(gestureRecognizer, [[UIPanGestureRecognizer alloc] init])) {
     [gestureRecognizer addTarget:self action:@selector(handlePan:)];
     *isInside = YES;
-    CGPoint nodeLocation = [touch locationInNode:self];
-    [self HL_scrollStart:nodeLocation];
+    [self HL_scrollStart:locationInSelf];
     return YES;
   } else if (HLGestureTarget_areEquivalentGestureRecognizers(gestureRecognizer, [[UIPinchGestureRecognizer alloc] init])) {
     [gestureRecognizer addTarget:self action:@selector(handlePinch:)];
     *isInside = YES;
     return YES;
   }
-
+#else
+  if (HLGestureTarget_areEquivalentGestureRecognizers(gestureRecognizer, [[NSPanGestureRecognizer alloc] init])) {
+    [gestureRecognizer addTarget:self action:@selector(handlePan:)];
+    *isInside = YES;
+    [self HL_scrollStart:locationInSelf];
+    return YES;
+  }
+#endif
+  
   *isInside = NO;
   return NO;
 }
 
+#if TARGET_OS_IPHONE
 - (void)handlePan:(UIPanGestureRecognizer *)gestureRecognizer
 {
   if (!_contentNode) {
@@ -770,7 +786,30 @@ enum {
     [self HL_zoomUpdate:gestureRecognizer.scale];
   }
 }
-
+#else
+- (void)handlePan:(NSPanGestureRecognizer *)gestureRecognizer
+{
+  if (!_contentNode) {
+    return;
+  }
+  
+  if (gestureRecognizer.state == NSGestureRecognizerStateEnded
+      || gestureRecognizer.state == NSGestureRecognizerStateCancelled) {
+    return;
+  }
+  
+  // note: The pan doesn't begin (UIGestureRecgonizerStateBegan) until there is already
+  // movement from the original touch location.  I think translationInView accounts for
+  // this, but I track my own translation (so that the conversion from view to node
+  // coordinate systems is done by convertPointFromView and convertPoint:fromNode).  So
+  // call HL_scrollStart from addToGesture:firstTouch:isInside:, starting the pan from
+  // there.  For UIGestureRecognizerStateBegan, we update it.
+  
+  CGPoint viewLocation = [gestureRecognizer locationInView:self.scene.view];
+  CGPoint sceneLocation = [self.scene convertPointFromView:viewLocation];
+  CGPoint nodeLocation = [self convertPoint:sceneLocation fromNode:self.scene];
+  [self HL_scrollUpdate:nodeLocation];
+}
 #endif
 
 #if TARGET_OS_IPHONE

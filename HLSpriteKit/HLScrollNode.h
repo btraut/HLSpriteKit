@@ -74,11 +74,7 @@ typedef NS_ENUM(NSInteger, HLScrollNodeContentScaleMinimumMode)
    button drag.  (Mouse scroll wheel would be a good candidate for zooming interaction, but
    scroll wheel events are not forwarded to the scene by `SKView`.)
 */
-#if HLGESTURETARGET_AVAILABLE
 @interface HLScrollNode : HLComponentNode <NSCoding, HLGestureTarget>
-#else
-@interface HLScrollNode : HLComponentNode <NSCoding>
-#endif
 
 /// @name Creating a Scroll Node
 

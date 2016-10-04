@@ -12,6 +12,10 @@
 #import "HLItemNode.h"
 #import "HLItemsNode.h"
 
+#if ! TARGET_OS_IPHONE
+#import "NSGestureRecognizer+MultipleActions.h"
+#endif
+
 enum {
   HLToolbarNodeZPositionLayerBackground = 0,
   HLToolbarNodeZPositionLayerSquares,
@@ -483,29 +487,40 @@ static const NSTimeInterval HLToolbarSlideDuration = 0.15f;
   }
 }
 
-#if HLGESTURETARGET_AVAILABLE
-
 #pragma mark -
 #pragma mark HLGestureTarget
 
 - (NSArray *)addsToGestureRecognizers
 {
+#if TARGET_OS_IPHONE
   return @[ [[UITapGestureRecognizer alloc] init] ];
+#else
+  return @[ [[NSClickGestureRecognizer alloc] init] ];
+#endif
 }
 
-- (BOOL)addToGesture:(UIGestureRecognizer *)gestureRecognizer firstTouch:(UITouch *)touch isInside:(BOOL *)isInside
+- (BOOL)addToGesture:(HLGestureRecognizer *)gestureRecognizer firstTouchSceneLocation:(CGPoint)interactionPoint isInside:(BOOL *)isInside
 {
   *isInside = YES;
+#if TARGET_OS_IPHONE
   if ([gestureRecognizer isKindOfClass:[UITapGestureRecognizer class]]) {
     // note: Require only one tap and one touch, same as our gesture recognizer returned
     // from addsToGestureRecognizers?  I think it's okay to be non-strict.
     [gestureRecognizer addTarget:self action:@selector(handleTap:)];
     return YES;
   }
+#else
+  if ([gestureRecognizer isKindOfClass:[NSClickGestureRecognizer class]]) {
+    // note: Require only one tap and one touch, same as our gesture recognizer returned
+    // from addsToGestureRecognizers?  I think it's okay to be non-strict.
+    [gestureRecognizer addTarget:self action:@selector(handleTap:)];
+    return YES;
+  }
+#endif
   return NO;
 }
 
-- (void)handleTap:(UIGestureRecognizer *)gestureRecognizer
+- (void)handleTap:(HLGestureRecognizer *)gestureRecognizer
 {
   CGPoint viewLocation = [gestureRecognizer locationInView:self.scene.view];
   CGPoint sceneLocation = [self.scene convertPointFromView:viewLocation];
@@ -516,6 +531,7 @@ static const NSTimeInterval HLToolbarSlideDuration = 0.15f;
     return;
   }
 
+#if TARGET_OS_IPHONE
   if (_toolTappedBlock) {
     _toolTappedBlock(toolTag);
   }
@@ -524,9 +540,17 @@ static const NSTimeInterval HLToolbarSlideDuration = 0.15f;
   if (delegate) {
     [delegate toolbarNode:self didTapTool:toolTag];
   }
-}
-
+#else
+  if (_toolClickedBlock) {
+    _toolClickedBlock(toolTag);
+  }
+  
+  id <HLToolbarNodeDelegate> delegate = _delegate;
+  if (delegate) {
+    [delegate toolbarNode:self didClickTool:toolTag];
+  }
 #endif
+}
 
 #if TARGET_OS_IPHONE
 
@@ -752,7 +776,7 @@ static const NSTimeInterval HLToolbarSlideDuration = 0.15f;
 
 @end
 
-#if HLGESTURETARGET_AVAILABLE
+#if TARGET_OS_IPHONE
 
 @implementation HLToolbarNodeMultiGestureTarget
 
@@ -775,7 +799,7 @@ static const NSTimeInterval HLToolbarSlideDuration = 0.15f;
             [[UIPanGestureRecognizer alloc] init] ];
 }
 
-- (BOOL)addToGesture:(UIGestureRecognizer *)gestureRecognizer firstTouch:(UITouch *)touch isInside:(BOOL *)isInside
+- (BOOL)addToGesture:(HLGestureRecognizer *)gestureRecognizer firstTouchSceneLocation:(CGPoint)interactionPoint isInside:(BOOL *)isInside
 {
   *isInside = YES;
   if ([gestureRecognizer isKindOfClass:[UITapGestureRecognizer class]]) {

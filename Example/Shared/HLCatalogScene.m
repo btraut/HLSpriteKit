@@ -105,7 +105,7 @@
   _catalogScrollNode.contentNode = catalogNode;
   [self addChild:_catalogScrollNode];
 
-#if HLGESTURETARGET_AVAILABLE
+#if TARGET_OS_IPHONE
 
   [multilineLabelNode hlSetGestureTarget:[HLTapGestureTarget tapGestureTargetWithHandleGestureBlock:^(UIGestureRecognizer *gestureRecognizer){
     [self HL_showMessage:@"Tapped HLMultilineLabelNode."];
@@ -144,9 +144,7 @@
   //   _catalogScrollNode.userInteractionEnabled = YES;
   //   self.view.multipleTouchEnabled = YES;
 
-#endif
-
-#if ! TARGET_OS_IPHONE
+#else
 
   gridNode.userInteractionEnabled = YES;
   gridNode.squareClickedBlock= ^(int squareIndex){

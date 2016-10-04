@@ -55,11 +55,7 @@
    and/or a callback for clicks.  See `HLRingNodeDelegate` for delegation and the
    `itemClickedBlock` property for setting a callback block.
 */
-#if HLGESTURETARGET_AVAILABLE
 @interface HLRingNode : HLComponentNode <NSCopying, NSCoding, HLGestureTarget>
-#else
-@interface HLRingNode : HLComponentNode <NSCopying, NSCoding>
-#endif
 
 /// @name Creating a Ring Node
 

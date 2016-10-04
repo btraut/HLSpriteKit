@@ -71,11 +71,7 @@ typedef NS_ENUM(NSInteger, HLToolbarNodeAnimation) {
    and/or a callback for left-clicks.  See `HLToolbarNodeDelegate` for delegation and
    `toolClickedBlock` property for setting a callback block.
 */
-#if HLGESTURETARGET_AVAILABLE
 @interface HLToolbarNode : HLComponentNode <NSCoding, HLGestureTarget>
-#else
-@interface HLToolbarNode : HLComponentNode <NSCoding>
-#endif
 
 /// @name Creating a Toolbar Node
 
@@ -516,7 +512,7 @@ typedef NS_ENUM(NSInteger, HLToolbarNodeAnimation) {
 
 @end
 
-#if HLGESTURETARGET_AVAILABLE
+#if TARGET_OS_IPHONE
 
 @protocol HLToolbarNodeMultiGestureTargetDelegate;
 
