@@ -200,9 +200,26 @@ static BOOL _sceneAssetsLoaded = NO;
       }
     }
     if (!foundShared) {
+      // Remove all existing targets+actions.
       [neededGestureRecognizer removeTarget:nil action:NULL];
+      
+      // Take ownership of gesture recognizer's delegate.
       neededGestureRecognizer.delegate = self;
+      
+#if ! TARGET_OS_IPHONE
+      // NSGestureRecognizers only allow for a single target/action out of the box. The
+      // NSGestureRecognizer+MultipleActions category allows for multiple targets+actions
+      // to be registered, but in order to trigger them, we must set the main
+      // target+action to be the NSGestureRecognizer's handleGesture: method as provided
+      // by the category.
+      neededGestureRecognizer.target = neededGestureRecognizer;
+      neededGestureRecognizer.action = @selector(handleGesture:);
+#endif
+      
+      // Add the shared recognizer to the list.
       [_sharedGestureRecognizers addObject:neededGestureRecognizer];
+      
+      // Add the shared recognizer to the view.
 #if TARGET_OS_IPHONE
       UIView *view = self.view;
 #else
