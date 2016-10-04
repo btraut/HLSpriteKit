@@ -55,6 +55,28 @@ static char targetActionPairsKey;
   [self.targetActionPairs addObject:pair];
 }
 
+- (void)removeTarget:(id)target action:(SEL)action
+{
+  for (NSUInteger i = 0; i < self.targetActionPairs.count; i++) {
+    TargetActionPair *targetActionPair = self.targetActionPairs[i];
+    
+    BOOL removeTargetActionPair = NO;
+    
+    if (targetActionPair->target == target && targetActionPair->action == action) {
+      removeTargetActionPair = YES;
+    } else if (target == nil && targetActionPair->action == action) {
+      removeTargetActionPair = YES;
+    } else if (targetActionPair->target == target && action == nil) {
+      removeTargetActionPair = YES;
+    }
+    
+    if (removeTargetActionPair) {
+      [self.targetActionPairs removeObjectAtIndex:i];
+      i--;
+    }
+  }
+}
+
 - (void)handleGesture:(NSGestureRecognizer *)gestureRecognizer
 {
   for (NSGestureRecognizer *targetActionPair in self.targetActionPairs) {

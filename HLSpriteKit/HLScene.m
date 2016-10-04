@@ -11,20 +11,20 @@
 #import "HLError.h"
 #import "SKNode+HLGestureTarget.h"
 
+#if ! TARGET_OS_IPHONE
+#import "NSGestureRecognizer+MultipleActions.h"
+#endif
+
 NSString * const HLSceneChildNoCoding = @"HLSceneChildNoCoding";
 NSString * const HLSceneChildResizeWithScene = @"HLSceneChildResizeWithScene";
-#if HLGESTURETARGET_AVAILABLE
 NSString * const HLSceneChildGestureTarget = @"HLSceneChildGestureTarget";
-#endif
 
 static NSString * const HLSceneChildUserDataKey = @"HLScene";
 
 typedef NS_OPTIONS(NSUInteger, HLSceneChildOptionBits) {
   HLSceneChildBitNoCoding = (1 << 0),
   HLSceneChildBitResizeWithScene = (1 << 1),
-#if HLGESTURETARGET_AVAILABLE
   HLSceneChildBitGestureTarget = (1 << 2),
-#endif
 };
 
 static const NSTimeInterval HLScenePresentationAnimationFadeDuration = 0.2f;
@@ -35,9 +35,7 @@ static BOOL _sceneAssetsLoaded = NO;
 {
   NSMutableDictionary *_childNoCoding;
   NSMutableDictionary *_childResizeWithScene;
-#if HLGESTURETARGET_AVAILABLE
   BOOL _childGestureTargetsExisted;
-#endif
 
   SKNode *_modalPresentationNode;
 }
@@ -47,13 +45,9 @@ static BOOL _sceneAssetsLoaded = NO;
   self = [super initWithCoder:aDecoder];
   if (self) {
 
-#if HLGESTURETARGET_AVAILABLE
     _gestureTargetHitTestMode = (HLSceneGestureTargetHitTestMode)[aDecoder decodeIntegerForKey:@"gestureTargetHitTestMode"];
-#endif
 
-#if HLGESTURETARGET_AVAILABLE
     _childGestureTargetsExisted = NO;
-#endif
     NSMutableArray *childrenArrayQueue = [NSMutableArray arrayWithObject:self.children];
     NSUInteger a = 0;
     while (a < [childrenArrayQueue count]) {
@@ -85,7 +79,6 @@ static BOOL _sceneAssetsLoaded = NO;
             _childResizeWithScene[[NSValue valueWithNonretainedObject:node]] = node;
           }
         }
-#if HLGESTURETARGET_AVAILABLE
         if ((optionBits & HLSceneChildBitGestureTarget) != 0) {
           id <HLGestureTarget> target = [node hlGestureTarget];
           if (!target) {
@@ -94,7 +87,6 @@ static BOOL _sceneAssetsLoaded = NO;
           _childGestureTargetsExisted = YES;
           [self needSharedGestureRecognizers:[target addsToGestureRecognizers]];
         }
-#endif
       }
     }
   }
@@ -132,9 +124,7 @@ static BOOL _sceneAssetsLoaded = NO;
 
   [super encodeWithCoder:aCoder];
 
-#if HLGESTURETARGET_AVAILABLE
   [aCoder encodeInteger:_gestureTargetHitTestMode forKey:@"gestureTargetHitTestMode"];
-#endif
 
   [removedChildren enumerateKeysAndObjectsUsingBlock:^(id key, id object, BOOL *stop){
     SKNode *child = [key nonretainedObjectValue];
@@ -152,25 +142,21 @@ static BOOL _sceneAssetsLoaded = NO;
 - (void)didMoveToView:(SKView *)view
 {
   [super didMoveToView:view];
-#if HLGESTURETARGET_AVAILABLE
   if (_sharedGestureRecognizers) {
-    for (UIGestureRecognizer *sharedGestureRecognizer in _sharedGestureRecognizers) {
+    for (HLGestureRecognizer *sharedGestureRecognizer in _sharedGestureRecognizers) {
       [view addGestureRecognizer:sharedGestureRecognizer];
     }
   }
-#endif
 }
 
 - (void)willMoveFromView:(SKView *)view
 {
   [super willMoveFromView:view];
-#if HLGESTURETARGET_AVAILABLE
   if (_sharedGestureRecognizers) {
-    for (UIGestureRecognizer *sharedGestureRecognizer in _sharedGestureRecognizers) {
+    for (HLGestureRecognizer *sharedGestureRecognizer in _sharedGestureRecognizers) {
       [view removeGestureRecognizer:sharedGestureRecognizer];
     }
   }
-#endif
 }
 
 - (void)didChangeSize:(CGSize)oldSize
@@ -194,8 +180,6 @@ static BOOL _sceneAssetsLoaded = NO;
   }
 }
 
-#if HLGESTURETARGET_AVAILABLE
-
 #pragma mark -
 #pragma mark Shared Gesture Recognizers
 
@@ -207,9 +191,9 @@ static BOOL _sceneAssetsLoaded = NO;
   // note: Uses an n*m search rather than something indexed, because it is assumed the
   // number of gesture recognizers is kept reasonably small.  For adding a large number
   // of targets to the scene, this might be problematic.
-  for (UIGestureRecognizer *neededGestureRecognizer in gestureRecognizers) {
+  for (HLGestureRecognizer *neededGestureRecognizer in gestureRecognizers) {
     BOOL foundShared = NO;
-    for (UIGestureRecognizer *sharedGestureRecognizer in _sharedGestureRecognizers) {
+    for (HLGestureRecognizer *sharedGestureRecognizer in _sharedGestureRecognizers) {
       if (HLGestureTarget_areEquivalentGestureRecognizers(neededGestureRecognizer, sharedGestureRecognizer)) {
         foundShared = YES;
         break;
@@ -219,7 +203,11 @@ static BOOL _sceneAssetsLoaded = NO;
       [neededGestureRecognizer removeTarget:nil action:NULL];
       neededGestureRecognizer.delegate = self;
       [_sharedGestureRecognizers addObject:neededGestureRecognizer];
+#if TARGET_OS_IPHONE
       UIView *view = self.view;
+#else
+      NSView *view = self.view;
+#endif
       if (view) {
         [view addGestureRecognizer:neededGestureRecognizer];
       }
@@ -227,6 +215,9 @@ static BOOL _sceneAssetsLoaded = NO;
   }
 }
 
+// Commented out because this method appeared not to be exposed publicly or
+// used internally, nor was it macOS compatible.
+/*
 - (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldReceiveTouch:(UITouch *)touch
 {
   // If no nodes are registered for our gesture recognition system, then don't try
@@ -298,7 +289,7 @@ static BOOL _sceneAssetsLoaded = NO;
       id <HLGestureTarget> target = [node hlGestureTarget];
       if (target) {
         BOOL isInside = NO;
-        if ([target addToGesture:gestureRecognizer firstTouch:touch isInside:&isInside]) {
+        if ([target addToGesture:gestureRecognizer firstTouchSceneLocation:sceneLocation isInside:&isInside]) {
           return YES;
         } else if (isInside) {
           return NO;
@@ -310,14 +301,13 @@ static BOOL _sceneAssetsLoaded = NO;
 
   return NO;
 }
+*/
 
-- (void)HLScene_handleGesture:(UIGestureRecognizer *)gestureRecognizer
+- (void)HLScene_handleGesture:(HLGestureRecognizer *)gestureRecognizer
 {
   // All gestures are handled by HLGestureTargets; this method is a no-op used a default
   // target action for the gesture recognizer at initialization.
 }
-
-#endif
 
 #pragma mark -
 #pragma mark Child Behavior Registration
@@ -361,7 +351,6 @@ static BOOL _sceneAssetsLoaded = NO;
     }
   }
 
-#if HLGESTURETARGET_AVAILABLE
   if ([options containsObject:HLSceneChildGestureTarget]) {
     id <HLGestureTarget> target = [node hlGestureTarget];
     if (!target) {
@@ -371,7 +360,6 @@ static BOOL _sceneAssetsLoaded = NO;
     _childGestureTargetsExisted = YES;
     [self needSharedGestureRecognizers:[target addsToGestureRecognizers]];
   }
-#endif
 
   if (!node.userData) {
     node.userData = [NSMutableDictionary dictionaryWithObject:@(optionBits) forKey:HLSceneChildUserDataKey];

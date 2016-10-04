@@ -35,6 +35,11 @@
 - (void)addTarget:(id)target action:(SEL)action;
 
 /**
+ Remove a target+action pair.
+ */
+- (void)removeTarget:(id)target action:(SEL)action;
+
+/**
  Automatically propogate the gesture recognizer handler call to all of the
  targets+actions registered in addTarget:action:.
  */

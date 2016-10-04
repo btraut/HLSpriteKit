@@ -113,13 +113,7 @@ BOOL HLGestureTarget_areEquivalentGestureRecognizers(HLGestureRecognizer *a, HLG
  claims the gesture's first touch is "inside"; or, it might decide to offer the gesture to
  all targets at a location regardless of layer height and opacity.
 */
-- (BOOL)addToGesture:(HLGestureRecognizer *)gestureRecognizer firstInteractionPoint:(CGPoint *)interactionPoint isInside:(BOOL *)isInside;
-
-// Commented out: Another idea, for callers with lots of targets: A version of
-// addToGesture to be implemented by SKNode descendants who care about sceneLocation not
-// touch.  This could avoid every target doing the same coordinates conversion over and
-// over.
-//- (BOOL)addToGesture:(HLGestureRecognizer *)gestureRecognizer firstTouchSceneLocation:(CGPoint)sceneLocation isInside:(BOOL *)isInside;
+- (BOOL)addToGesture:(HLGestureRecognizer *)gestureRecognizer firstTouchSceneLocation:(CGPoint)interactionPoint isInside:(BOOL *)isInside;
 
 /**
  Returns an array of configured gesture recognizers that the target wants to handle.

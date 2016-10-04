@@ -184,7 +184,7 @@ HLGestureTarget_areEquivalentGestureRecognizers(HLGestureRecognizer *a, HLGestur
   return self;
 }
 
-- (BOOL)addToGesture:(HLGestureRecognizer *)gestureRecognizer firstInteractionPoint:(CGPoint *)interactionPoint isInside:(BOOL *)isInside
+- (BOOL)addToGesture:(HLGestureRecognizer *)gestureRecognizer firstTouchSceneLocation:(CGPoint)interactionPoint isInside:(BOOL *)isInside
 {
   BOOL handleGesture = NO;
 
