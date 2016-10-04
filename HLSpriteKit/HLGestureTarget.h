@@ -8,15 +8,7 @@
 
 #import <TargetConditionals.h>
 
-#if TARGET_OS_IPHONE
-#define HLGESTURETARGET_AVAILABLE 1
-#else
-#define HLGESTURETARGET_AVAILABLE 0
-#endif
-
-#if HLGESTURETARGET_AVAILABLE
-
-#import <UIKit/UIKit.h>
+#import "HLTypeDefs.h"
 
 /**
  Returns true if the passed gesture recognizers are of the same type and are configured
@@ -27,17 +19,17 @@
  return `YES`.
 
  Use case: Gesture targets return a list of gesture recognizers to which they might
- add themselves.  It is then the responsibility of the `UIGestureRecognizer` delegate
+ add themselves.  It is then the responsibility of the `HLGestureRecognizer` delegate
  (usually an `SKScene` or `UIViewController`) to add gesture recognizers to the view.
  But if the delegate already has an equivalent gesture recognizer added, then there's
  no need to add another.  This method can be used to decide what counts as "equivalent".
 
  @bug Might be worth comparing and contrasting with `[UIGestureTarget isEqual:]`.
 */
-BOOL HLGestureTarget_areEquivalentGestureRecognizers(UIGestureRecognizer *a, UIGestureRecognizer *b);
+BOOL HLGestureTarget_areEquivalentGestureRecognizers(HLGestureRecognizer *a, HLGestureRecognizer *b);
 
 /**
- A generic target for `UIGestureRecognizers`.
+ A generic target for `HLGestureRecognizers`.
 
  ## Use Case
 
@@ -108,7 +100,7 @@ BOOL HLGestureTarget_areEquivalentGestureRecognizers(UIGestureRecognizer *a, UIG
  which is considered invisible (from a user's point of view).
 
  To explain the logic, here is a sketch of a typical caller implementation.  The caller is
- a `UIGestureRecognizerDelegate` of a number of standard gesture recognizers.  It has a
+ a `HLGestureRecognizerDelegate` of a number of standard gesture recognizers.  It has a
  number of possible targets for the gestures, some of which are controlled completely by
  the caller, and some of which are encapsulated into opaque components.  The motivating
  example is reusable subclasses of `SKNode`, which can't own their own gesture
@@ -121,13 +113,13 @@ BOOL HLGestureTarget_areEquivalentGestureRecognizers(UIGestureRecognizer *a, UIG
  claims the gesture's first touch is "inside"; or, it might decide to offer the gesture to
  all targets at a location regardless of layer height and opacity.
 */
-- (BOOL)addToGesture:(UIGestureRecognizer *)gestureRecognizer firstTouch:(UITouch *)touch isInside:(BOOL *)isInside;
+- (BOOL)addToGesture:(HLGestureRecognizer *)gestureRecognizer firstInteractionPoint:(CGPoint *)interactionPoint isInside:(BOOL *)isInside;
 
 // Commented out: Another idea, for callers with lots of targets: A version of
 // addToGesture to be implemented by SKNode descendants who care about sceneLocation not
 // touch.  This could avoid every target doing the same coordinates conversion over and
 // over.
-//- (BOOL)addToGesture:(UIGestureRecognizer *)gestureRecognizer firstTouchSceneLocation:(CGPoint)sceneLocation isInside:(BOOL *)isInside;
+//- (BOOL)addToGesture:(HLGestureRecognizer *)gestureRecognizer firstTouchSceneLocation:(CGPoint)sceneLocation isInside:(BOOL *)isInside;
 
 /**
  Returns an array of configured gesture recognizers that the target wants to handle.
@@ -173,7 +165,7 @@ BOOL HLGestureTarget_areEquivalentGestureRecognizers(UIGestureRecognizer *a, UIG
 /**
  Initializes a tap gesture target with the passed handle gesture block.
 */
-- (instancetype)initWithHandleGestureBlock:(void(^)(UIGestureRecognizer *))handleGestureBlock;
+- (instancetype)initWithHandleGestureBlock:(void(^)(HLGestureRecognizer *))handleGestureBlock;
 
 /**
  Convenience method for instantiating a tap gesture target configured with the passed
@@ -189,7 +181,7 @@ BOOL HLGestureTarget_areEquivalentGestureRecognizers(UIGestureRecognizer *a, UIG
 
  See `initWithHandleGestureBlock:`.
 */
-+ (instancetype)tapGestureTargetWithHandleGestureBlock:(void(^)(UIGestureRecognizer *))handleGestureBlock;
++ (instancetype)tapGestureTargetWithHandleGestureBlock:(void(^)(HLGestureRecognizer *))handleGestureBlock;
 
 /// @name Setting the Delegate or Handler
 
@@ -203,7 +195,7 @@ BOOL HLGestureTarget_areEquivalentGestureRecognizers(UIGestureRecognizer *a, UIG
 /**
  A block that will be executed when the gesture target is tapped.
 */
-@property (nonatomic, strong) void (^handleGestureBlock)(UIGestureRecognizer *);
+@property (nonatomic, strong) void (^handleGestureBlock)(HLGestureRecognizer *);
 
 /// @name Configuring Gesture Handling
 
@@ -219,7 +211,7 @@ BOOL HLGestureTarget_areEquivalentGestureRecognizers(UIGestureRecognizer *a, UIG
 
 @protocol HLTapGestureTargetDelegate <NSObject>
 
-- (void)tapGestureTarget:(HLTapGestureTarget *)tapGestureTarget didTap:(UIGestureRecognizer *)gestureRecognizer;
+- (void)tapGestureTarget:(HLTapGestureTarget *)tapGestureTarget didTap:(HLGestureRecognizer *)gestureRecognizer;
 
 @end
 
@@ -287,7 +279,7 @@ BOOL HLGestureTarget_areEquivalentGestureRecognizers(UIGestureRecognizer *a, UIG
      __weak HLScrollNode *goalsOverlayWeak = goalsOverlay;
 
      if (victoryButton) {
-       [victoryButton hlSetGestureTarget:[[HLTapGestureTarget alloc] initWithHandleGestureBlock:^(UIGestureRecognizer *gestureRecognizer){
+       [victoryButton hlSetGestureTarget:[[HLTapGestureTarget alloc] initWithHandleGestureBlock:^(HLGestureRecognizer *gestureRecognizer){
          if (self->_tutorialState.tutorialActive) {
            [self FL_tutorialRecognizedAction:FLTutorialActionGoalsDismissed withArguments:nil];
          }
@@ -321,5 +313,3 @@ BOOL HLGestureTarget_areEquivalentGestureRecognizers(UIGestureRecognizer *a, UIG
 
   ...etc...
 */
-
-#endif

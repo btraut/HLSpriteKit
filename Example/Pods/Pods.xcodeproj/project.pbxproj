@@ -73,6 +73,12 @@
 		7F123BC64D1457975CDE1357A8ABD97B /* HLMenuNode.m in Sources */ = {isa = PBXBuildFile; fileRef = A5B57D57E12D945BBF50EE01AB0F5F4D /* HLMenuNode.m */; };
 		82529D763A28C32A6BE83567E3903C95 /* SKLabelNode+HLLabelNodeAdditions.h in Headers */ = {isa = PBXBuildFile; fileRef = 59BAB484C3CAE54448AADDEB7EFB4B5F /* SKLabelNode+HLLabelNodeAdditions.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		82CA8CBA1497795B1DCC958AECA7648F /* HLLayoutManager.h in Headers */ = {isa = PBXBuildFile; fileRef = 569D620B666D97A726C010FB9BFAAB21 /* HLLayoutManager.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		84662B411DA32643006B1812 /* HLTypeDefs.h in Headers */ = {isa = PBXBuildFile; fileRef = 84662B401DA3260D006B1812 /* HLTypeDefs.h */; };
+		84662B421DA32644006B1812 /* HLTypeDefs.h in Headers */ = {isa = PBXBuildFile; fileRef = 84662B401DA3260D006B1812 /* HLTypeDefs.h */; };
+		84662B4B1DA33254006B1812 /* NSGestureRecognizer+MultipleActions.h in Headers */ = {isa = PBXBuildFile; fileRef = 84662B491DA33254006B1812 /* NSGestureRecognizer+MultipleActions.h */; };
+		84662B4C1DA33254006B1812 /* NSGestureRecognizer+MultipleActions.h in Headers */ = {isa = PBXBuildFile; fileRef = 84662B491DA33254006B1812 /* NSGestureRecognizer+MultipleActions.h */; };
+		84662B4D1DA33254006B1812 /* NSGestureRecognizer+MultipleActions.m in Sources */ = {isa = PBXBuildFile; fileRef = 84662B4A1DA33254006B1812 /* NSGestureRecognizer+MultipleActions.m */; };
+		84662B4E1DA33254006B1812 /* NSGestureRecognizer+MultipleActions.m in Sources */ = {isa = PBXBuildFile; fileRef = 84662B4A1DA33254006B1812 /* NSGestureRecognizer+MultipleActions.m */; };
 		84A6FA719850D2B2A7BE3B73593D35E5 /* HLGestureTarget.h in Headers */ = {isa = PBXBuildFile; fileRef = D2301F1C1945E5711261E9816A3912F9 /* HLGestureTarget.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		84CC8F10B6D20832C45D36CB1AE7AD9B /* SKNode+HLGestureTarget.h in Headers */ = {isa = PBXBuildFile; fileRef = 30EA261954C904B547CEB0823B57B7B2 /* SKNode+HLGestureTarget.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		86CABE7EDA04C9079716C6D66A5B02E2 /* HLRingLayoutManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 87FDFAA550CD6B13E5D50DAEF61037D8 /* HLRingLayoutManager.m */; };
@@ -205,6 +211,9 @@
 		7DB53F7638C59AD8869246F463E677DD /* HLItemsNode.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = HLItemsNode.m; sourceTree = "<group>"; };
 		7EF661CFE733E3597F3BBC3A99A510DE /* Pods-iOS.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = "Pods-iOS.debug.xcconfig"; sourceTree = "<group>"; };
 		819E2B20D3B5830249142CDB9798C26F /* libPods-iOS.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-iOS.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		84662B401DA3260D006B1812 /* HLTypeDefs.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = HLTypeDefs.h; sourceTree = "<group>"; };
+		84662B491DA33254006B1812 /* NSGestureRecognizer+MultipleActions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSGestureRecognizer+MultipleActions.h"; sourceTree = "<group>"; };
+		84662B4A1DA33254006B1812 /* NSGestureRecognizer+MultipleActions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSGestureRecognizer+MultipleActions.m"; sourceTree = "<group>"; };
 		849DC3CA2A62907AC4355C84BC319F5F /* HLComponentNode.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = HLComponentNode.h; sourceTree = "<group>"; };
 		87FDFAA550CD6B13E5D50DAEF61037D8 /* HLRingLayoutManager.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = HLRingLayoutManager.m; sourceTree = "<group>"; };
 		90EECB7BE516C7AC291FF1E37E669BE7 /* HLItemNode.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = HLItemNode.m; sourceTree = "<group>"; };
@@ -365,6 +374,9 @@
 				378F12D2F8A07A2C0E39637EB8D04998 /* HLTiledNode.m */,
 				1BE782C9FC771757862FE32A54362276 /* HLToolbarNode.h */,
 				29C58987BCD9FC66EECADFF3885EB9CD /* HLToolbarNode.m */,
+				84662B401DA3260D006B1812 /* HLTypeDefs.h */,
+				84662B491DA33254006B1812 /* NSGestureRecognizer+MultipleActions.h */,
+				84662B4A1DA33254006B1812 /* NSGestureRecognizer+MultipleActions.m */,
 				59BAB484C3CAE54448AADDEB7EFB4B5F /* SKLabelNode+HLLabelNodeAdditions.h */,
 				972B997CF6782153954CF3F190B46E9A /* SKLabelNode+HLLabelNodeAdditions.m */,
 				30EA261954C904B547CEB0823B57B7B2 /* SKNode+HLGestureTarget.h */,
@@ -560,6 +572,7 @@
 				A305E51BF79C8E31A6681B2BFB0F066F /* HLOutlineLayoutManager.h in Headers */,
 				5161344B586029EEA075892C31E539D6 /* HLRingLayoutManager.h in Headers */,
 				D2FB634F3B47A9AE3AEEBD0B89715B8C /* HLRingNode.h in Headers */,
+				84662B411DA32643006B1812 /* HLTypeDefs.h in Headers */,
 				8C34A91FE8EA855EFEE0657229FD03C5 /* HLScene.h in Headers */,
 				B601A0CE7D81FFA6ED7F6881DB1DC8D6 /* HLScrollNode.h in Headers */,
 				760C822D3BBC58732935AF40F05E1CB0 /* HLSpriteKit.h in Headers */,
@@ -568,6 +581,7 @@
 				9024F70BEC1605C3966B7A99C27F217F /* HLToolbarNode.h in Headers */,
 				B99A413FBE3A87BBEE19B1CD2A79108F /* SKLabelNode+HLLabelNodeAdditions.h in Headers */,
 				84CC8F10B6D20832C45D36CB1AE7AD9B /* SKNode+HLGestureTarget.h in Headers */,
+				84662B4C1DA33254006B1812 /* NSGestureRecognizer+MultipleActions.h in Headers */,
 				0D3C86D281818836F9886F7E853E7C0F /* SKNode+HLLayoutManager.h in Headers */,
 				CB7992C048DB6EA0530D794343591FDA /* SKNode+HLNodeVisuals.h in Headers */,
 				72C5E4D53DEFAF0A8D4ACC95FB78614D /* UIImage+HLImageAdditions.h in Headers */,
@@ -596,6 +610,7 @@
 				EA60BE01A644B8446A6BA9CD6F14719D /* HLOutlineLayoutManager.h in Headers */,
 				A0D1A2F04DC9CC3A96FD38927FE93C53 /* HLRingLayoutManager.h in Headers */,
 				681041315B2995E4249D448C05CF234D /* HLRingNode.h in Headers */,
+				84662B421DA32644006B1812 /* HLTypeDefs.h in Headers */,
 				5C8E2435FABA2DCB8B79A8BCE399DCB9 /* HLScene.h in Headers */,
 				A8AD4721F7EA2637F64E2914D1149044 /* HLScrollNode.h in Headers */,
 				CCA351F6D4AD9876FBE3777D5ED5E4D0 /* HLSpriteKit.h in Headers */,
@@ -604,6 +619,7 @@
 				0236AD3ACF8611D0C3C0B810C1EB1D09 /* HLToolbarNode.h in Headers */,
 				82529D763A28C32A6BE83567E3903C95 /* SKLabelNode+HLLabelNodeAdditions.h in Headers */,
 				B9BDC59299ACC7ADECB190575A4F18E6 /* SKNode+HLGestureTarget.h in Headers */,
+				84662B4B1DA33254006B1812 /* NSGestureRecognizer+MultipleActions.h in Headers */,
 				6EFC531D166ECE22AB439D5470D49458 /* SKNode+HLLayoutManager.h in Headers */,
 				02A6489E5C2BBF11212EC5A088AD7CA8 /* SKNode+HLNodeVisuals.h in Headers */,
 				52C8D0421C19D594D58A7AC7F0A7EA4B /* UIImage+HLImageAdditions.h in Headers */,
@@ -720,7 +736,7 @@
 			isa = PBXProject;
 			attributes = {
 				LastSwiftUpdateCheck = 0730;
-				LastUpgradeCheck = 0700;
+				LastUpgradeCheck = 0800;
 			};
 			buildConfigurationList = 2D8E8EC45A3A1A1D94AE762CB5028504 /* Build configuration list for PBXProject "Pods" */;
 			compatibilityVersion = "Xcode 3.2";
@@ -772,6 +788,7 @@
 				47AA116490E81FCCC85FB1970F8B402D /* HLGridNode.m in Sources */,
 				12BFC3E916A7CA4C1263EC46CFEF4A6C /* HLItemContentNode.m in Sources */,
 				A6C636988D50962C732491A6EEEEC4EE /* HLItemNode.m in Sources */,
+				84662B4E1DA33254006B1812 /* NSGestureRecognizer+MultipleActions.m in Sources */,
 				B8E33165BEF752CAB717F564633772DA /* HLItemsNode.m in Sources */,
 				97918F0ABCA1B2ED7436ABF2DD9F9574 /* HLLabelButtonNode.m in Sources */,
 				FD8F27934BD676E5986CDBF2C5F013B1 /* HLLayoutManager.m in Sources */,
@@ -807,6 +824,7 @@
 				7458BB8E0C64BCDBD1C108C03768E84F /* HLGridNode.m in Sources */,
 				295B39166C29C9E77ABA8DE29DD00A20 /* HLItemContentNode.m in Sources */,
 				FA2A5852E35D15BA3BA0A83F07FCB925 /* HLItemNode.m in Sources */,
+				84662B4D1DA33254006B1812 /* NSGestureRecognizer+MultipleActions.m in Sources */,
 				A051935CD8D602CD60F29A8778772E71 /* HLItemsNode.m in Sources */,
 				2526D140B5DE3F938F3DA0482D5A3A50 /* HLLabelButtonNode.m in Sources */,
 				2C036617C94DCE88823E08C5550B6C5A /* HLLayoutManager.m in Sources */,
@@ -879,13 +897,17 @@
 				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES;
 				CLANG_WARN_EMPTY_BODY = YES;
 				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
 				CLANG_WARN_INT_CONVERSION = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				COPY_PHASE_STRIP = YES;
 				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_NO_COMMON_BLOCKS = YES;
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					"POD_CONFIGURATION_RELEASE=1",
 					"$(inherited)",
@@ -1174,14 +1196,18 @@
 				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES;
 				CLANG_WARN_EMPTY_BODY = YES;
 				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
 				CLANG_WARN_INT_CONVERSION = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				COPY_PHASE_STRIP = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_TESTABILITY = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
 				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					"POD_CONFIGURATION_DEBUG=1",
