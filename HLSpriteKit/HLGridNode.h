@@ -64,11 +64,7 @@ typedef NS_ENUM(NSInteger, HLGridNodeLayoutMode) {
    `squareClickedBlock` property for setting a callback block.
 */
 
-#if HLGESTURETARGET_AVAILABLE
 @interface HLGridNode : HLComponentNode <NSCoding, HLGestureTarget>
-#else
-@interface HLGridNode : HLComponentNode <NSCoding>
-#endif
 
 /// @name Creating a Grid Node
 

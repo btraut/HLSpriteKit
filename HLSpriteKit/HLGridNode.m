@@ -11,6 +11,10 @@
 #import "HLItemNode.h"
 #import "HLItemsNode.h"
 
+#if ! TARGET_OS_IPHONE
+#import "NSGestureRecognizer+MultipleActions.h"
+#endif
+
 enum {
   HLGridNodeZPositionLayerBackground = 0,
   HLGridNodeZPositionLayerSquares,
@@ -397,29 +401,40 @@ enum {
                               completion:completion];
 }
 
-#if HLGESTURETARGET_AVAILABLE
-
 #pragma mark -
 #pragma mark HLGestureTarget
 
 - (NSArray *)addsToGestureRecognizers
 {
+#if TARGET_OS_IPHONE
   return @[ [[UITapGestureRecognizer alloc] init] ];
+#else
+  return @[ [[NSClickGestureRecognizer alloc] init] ];
+#endif
 }
 
-- (BOOL)addToGesture:(UIGestureRecognizer *)gestureRecognizer firstTouch:(UITouch *)touch isInside:(BOOL *)isInside
+- (BOOL)addToGesture:(HLGestureRecognizer *)gestureRecognizer firstTouchSceneLocation:(CGPoint)interactionPoint isInside:(BOOL *)isInside
 {
   *isInside = YES;
+#if TARGET_OS_IPHONE
   if ([gestureRecognizer isKindOfClass:[UITapGestureRecognizer class]]) {
     // note: Require only one tap and one touch, same as our gesture recognizer returned
     // from addsToGestureRecognizers?  I think it's okay to be non-strict.
     [gestureRecognizer addTarget:self action:@selector(handleTap:)];
     return YES;
   }
+#else
+  if ([gestureRecognizer isKindOfClass:[NSClickGestureRecognizer class]]) {
+    // note: Require only one tap and one touch, same as our gesture recognizer returned
+    // from addsToGestureRecognizers?  I think it's okay to be non-strict.
+    [gestureRecognizer addTarget:self action:@selector(handleTap:)];
+    return YES;
+  }
+#endif
   return NO;
 }
 
-- (void)handleTap:(UIGestureRecognizer *)gestureRecognizer
+- (void)handleTap:(HLGestureRecognizer *)gestureRecognizer
 {
   CGPoint viewLocation = [gestureRecognizer locationInView:self.scene.view];
   CGPoint sceneLocation = [self.scene convertPointFromView:viewLocation];
@@ -430,6 +445,7 @@ enum {
     return;
   }
 
+#if TARGET_OS_IPHONE
   if (_squareTappedBlock) {
     _squareTappedBlock(squareIndex);
   }
@@ -438,9 +454,17 @@ enum {
   if (delegate) {
     [delegate gridNode:self didTapSquare:squareIndex];
   }
-}
-
+#else
+  if (_squareClickedBlock) {
+    _squareClickedBlock(squareIndex);
+  }
+  
+  id <HLGridNodeDelegate> delegate = _delegate;
+  if (delegate) {
+    [delegate gridNode:self didClickSquare:squareIndex];
+  }
 #endif
+}
 
 #if TARGET_OS_IPHONE
 

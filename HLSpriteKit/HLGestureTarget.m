@@ -12,7 +12,6 @@
 #import "NSGestureRecognizer+MultipleActions.h"
 #endif
 
-
 BOOL
 HLGestureTarget_areEquivalentGestureRecognizers(HLGestureRecognizer *a, HLGestureRecognizer *b)
 {
