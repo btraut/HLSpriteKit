@@ -6,6 +6,8 @@
 //  Copyright © 2016 Hilo Games. All rights reserved.
 //
 
+#import <TargetConditionals.h>
+
 #if ! TARGET_OS_IPHONE
 
 /**
